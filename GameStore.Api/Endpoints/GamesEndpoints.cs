@@ -14,11 +14,13 @@ namespace GameStore.Api.Endpoints
 
         public static void MapGamesEndpoints(this WebApplication app)
         {
+            var group = app.MapGroup("/games");
+            
             // GET /games
-            app.MapGet("/games", () => games);
+            group.MapGet("/", () => games);
 
             // GET /games/id
-            app.MapGet("/games/{id}", (int id) => 
+            group.MapGet("/{id}", (int id) => 
             {
                 var game = games.Find(game => game.Id == id);
 
@@ -27,7 +29,7 @@ namespace GameStore.Api.Endpoints
             .WithName(GetGameEndpoint);
 
             // POST /games
-            app.MapPost("/games", (CreateGameDto newGame) =>
+            group.MapPost("/", (CreateGameDto newGame) =>
             {
                 GameDto game = new(
                     games.Count + 1,
@@ -43,7 +45,7 @@ namespace GameStore.Api.Endpoints
             });
 
             //PUT games/id
-            app.MapPut("/games/{id}", (int id, UpdateGameDto updatedGame) =>
+            group.MapPut("/{id}", (int id, UpdateGameDto updatedGame) =>
             {
                 var index = games.FindIndex(game => game.Id == id);
 
@@ -64,7 +66,7 @@ namespace GameStore.Api.Endpoints
             });
 
             // DELETE /games/id
-            app.MapDelete("/games/{id}", (int id) =>
+            group.MapDelete("/{id}", (int id) =>
             {
             games.RemoveAll(game => game.Id == id);
 
